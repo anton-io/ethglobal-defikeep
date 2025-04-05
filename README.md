@@ -2,9 +2,12 @@
 
 [**DeFiKeep**(.com)](https://defikeep.com) is a minimalistic, secure EVM smart contract for locking native tokens over long periods of time. 
  
-Users can designate a reclaim address and specify a duration after which the funds can be withdrawn.
+Users can set a designated reclaim address and specify a time-lock duration after which funds become accessible. This reclaim address remains fully updatable, enabling flexible financial applications and evolving strategies.
 
-Perfect for long-term holders, inheritance planning, or crypto time capsules.
+Ideal for long-term holders seeking protection against lost access, inheritance planning that ensures seamless asset transfer, or creating crypto time capsules that unlock value at predetermined future dates.
+
+DeFiKeep provides peace of mind while maintaining full control over your digital assets through customizable time-based security protocols.
+
 
 # 🔥 Motivation
 According to many studies [[1]](https://www.etoro.com/news-and-analysis/press-releases/short-term-fling-or-long-term-love-analysis-shows-commitment-pays-off-when-it-comes-to-investing/)[[2]](https://www.bluewealth.com.au/general-knowledge/the-best-performing-investors-are-ones-that-are-dead/), most investors underperform the very assets they invest in, and the average investor earns significantly less than the market average, often due to emotional decisions like panic selling, FOMO buying, or trying to time the market.
@@ -37,11 +40,11 @@ DeFi Keep allows any user to:
 ## 🔐 Features
 
 - ✅ Time-based unlocks.
-- ✅ Multiple locks per user.
-- ✅ Reclaim address updatable by the current reclaim address.
 - ✅ Reentrancy protection.
+- ✅ Multiple locks per user.
 - ✅ Self-contained with no external dependencies.
-- ✅ Minimalist design so it is easily understood and useful.
+- ✅ Reclaim address updatable by the current reclaim address.
+- ✅ Minimalist design so it is easily understood and extendable.
 
 
 ---
