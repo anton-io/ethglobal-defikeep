@@ -1,4 +1,4 @@
-# 🔐⏳📈 DeFi Keep (Growing)!
+# <span style="color:#f2a900; font-weight:800;margin-right:4px">₿</span>🔐⏳📈 DeFi Keep (Growing)!
 
 [**DeFiKeep**(.com)](https://defikeep.com) is a minimalistic, secure EVM smart contract for locking native tokens over long periods of time. 
  
