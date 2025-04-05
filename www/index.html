@@ -356,6 +356,7 @@
       const tx = await contract.methods.reclaim(lockId).send({from: userAccount});
       alert(`Transaction successful: ${tx.transactionHash}`);
       await showLocks();
+      await showBalance();
     } catch (error) {
       console.error("Error writing to contract", error);
     }
@@ -441,7 +442,6 @@
     }
   }
 
-
   document.getElementById('lockFundsBtn').onclick = () => {
     document.getElementById('lockPopup').style.display = 'flex';
   };
@@ -466,6 +466,7 @@
       });
       alert(`Locked successfully! TX: ${tx.transactionHash}`);
       await showLocks();
+      await showBalance();
     } catch (err) {
       alert(`Failed to lock: ${err.message}`);
       console.error(err);
