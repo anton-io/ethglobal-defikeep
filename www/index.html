@@ -355,6 +355,7 @@
     try {
       const tx = await contract.methods.reclaim(lockId).send({from: userAccount});
       alert(`Transaction successful: ${tx.transactionHash}`);
+      await showLocks();
     } catch (error) {
       console.error("Error writing to contract", error);
     }
