@@ -1,4 +1,4 @@
-# ⛓️ DeFi Keep
+# 🔐⏳📈 DeFi Keep (Growing)!
 
 [**DeFiKeep**(.com)](https://defikeep.com) is a minimalistic, secure EVM smart contract for locking native tokens over long periods of time. 
  
@@ -6,7 +6,7 @@ Users can designate a reclaim address and specify a duration after which the fun
 
 Perfect for long-term holders, inheritance planning, or crypto time capsules.
 
-# 🔒⏳🔥 Motivation
+# 🔥 Motivation
 According to many studies [[1]](https://www.etoro.com/news-and-analysis/press-releases/short-term-fling-or-long-term-love-analysis-shows-commitment-pays-off-when-it-comes-to-investing/)[[2]](https://www.bluewealth.com.au/general-knowledge/the-best-performing-investors-are-ones-that-are-dead/), most investors underperform the very assets they invest in, and the average investor earns significantly less than the market average, often due to emotional decisions like panic selling, FOMO buying, or trying to time the market.
 
 In crypto, it is even more dramatic:
@@ -69,8 +69,8 @@ The DeFi Keep contract has been __deployed__ and __verified__ in the following c
 
 ### Mainnets:
 
-- **RootStock Testnet**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://rootstock.blockscout.com/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
-- **Flow EVM Testnet**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://evm.flowscan.io/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
+- **RootStock**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://rootstock.blockscout.com/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
+- **Flow EVM**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://evm.flowscan.io/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
 
 
 ### Testnets:
