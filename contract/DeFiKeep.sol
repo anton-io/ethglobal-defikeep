@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// @title DeFiKeep: Time-Locked native token vaults.
+// @title DeFi Keep: Time-Locked native token vault onchain
 // @author Antonio Roldao
 // @notice This contract allows users to lock the native token for a specified
 //         duration with a designated reclaim address. Funds can only be reclaimed
@@ -36,8 +36,8 @@ pragma solidity ^0.8.20;
  *   - Protection against reentrancy attacks.
  *
  *  Ideal for:
- *   - Crypto time capsules.
  *   - Cold storage enforcement.
+ *   - Native token time capsules.
  *   - HODL with hard-coded discipline.
  *
 */
@@ -53,7 +53,7 @@ contract DeFiKeep {
         bool reclaimed;         // Whether the funds have already been reclaimed.
     }
 
-    // Mapping that stores a list of locks for each address (indexed by origin address).
+    // Mapping that stores a list of locks for each address (indexed by reclaimAddress address).
     mapping(address => Lock[]) public locks;
 
     // Events that log various actions in the contract.
@@ -130,20 +130,20 @@ contract DeFiKeep {
     }
 
     // Function to check how much time is left until a specific lock is unlocked.
-    function timeLeft(uint256 lockId, address origin) external view returns (uint256) {
-        Lock storage userLock = locks[origin][lockId];
-        if (block.timestamp >= userLock.unlockTime) return 0;
-        return userLock.unlockTime - block.timestamp;
+    function timeLeft(address reclaimAddress, uint256 lockId) external view returns (uint256) {
+        Lock storage locked = locks[reclaimAddress][lockId];
+        if (block.timestamp >= locked.unlockTime) return 0;
+        return locked.unlockTime - block.timestamp;
     }
 
     // Function to check whether a specific lock has been unlocked.
-    function isUnlocked(uint256 lockId, address origin) external view returns (bool) {
-        return block.timestamp >= locks[origin][lockId].unlockTime;
+    function isUnlocked(address reclaimAddress, uint256 lockId) external view returns (bool) {
+        return block.timestamp >= locks[reclaimAddress][lockId].unlockTime;
     }
 
     // Function to get the details of a specific lock.
-    function lockDetails(uint256 lockId, address origin) external view returns (Lock memory) {
-        return locks[origin][lockId];
+    function lockDetails(address reclaimAddress, uint256 lockId) external view returns (Lock memory) {
+        return locks[reclaimAddress][lockId];
     }
 
     // Fallback function to prevent accidental token transfers.

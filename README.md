@@ -60,7 +60,7 @@ The DeFi Keep contract has been deployed and verified in the following chains/ad
 
 ## 🚀 How to Use
 
-### Lock Native Token
+DeFi Keep mainly consists of 3 operations: 1) lock funds, 2) reclaim funds, and 3) optionally transfer the lock ownership of locked funds to a new owner/address. 
 
 ### 🔐 Lock Native Token
 
