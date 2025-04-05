@@ -22,7 +22,7 @@ DIR_THIS = os.path.abspath(os.path.dirname(__file__))
 
 CONFIGS = {
     'citrea-testnet': {
-        'ca': '0xa1AC5bD954aa0857F15287eC67Fee4d5587f6E04',
+        'ca': '0x85938cf4e73Bb05882bBeb572b7B490b02eD4Dee',
        'rpc': 'https://rpc.testnet.citrea.xyz'
     },
     'rootstock-testnet': {

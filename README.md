@@ -1,15 +1,15 @@
 # ⛓️ DeFi Keep
 
-**DeFi Keep** is a minimalistic, secure EVM smart contract for locking then native token over long periods of time.
-
+[**DeFiKeep**(.com)](https://defikeep.com) is a minimalistic, secure EVM smart contract for locking native tokens over long periods of time. 
+ 
 Users can designate a reclaim address and specify a duration after which the funds can be withdrawn.
 
 Perfect for long-term holders, inheritance planning, or crypto time capsules.
 
 # 🔒⏳🔥 Motivation
-Most investors underperform the very assets they invest in. According to many studies [[1]](https://www.etoro.com/news-and-analysis/press-releases/short-term-fling-or-long-term-love-analysis-shows-commitment-pays-off-when-it-comes-to-investing/)[[2]](https://www.bluewealth.com.au/general-knowledge/the-best-performing-investors-are-ones-that-are-dead/), the average investor earns significantly less than the market average, often due to emotional decisions like panic selling, FOMO buying, or trying to time the market.
+According to many studies [[1]](https://www.etoro.com/news-and-analysis/press-releases/short-term-fling-or-long-term-love-analysis-shows-commitment-pays-off-when-it-comes-to-investing/)[[2]](https://www.bluewealth.com.au/general-knowledge/the-best-performing-investors-are-ones-that-are-dead/), most investors underperform the very assets they invest in, and the average investor earns significantly less than the market average, often due to emotional decisions like panic selling, FOMO buying, or trying to time the market.
 
-In crypto, it’s even more dramatic:
+In crypto, it is even more dramatic:
 
 * 📉 80% of active crypto traders underperform HODLers.
 
@@ -17,7 +17,8 @@ In crypto, it’s even more dramatic:
 
 * 💸 Many retail users sell too early or rotate into worse-performing assets due to short-term thinking.
 
-That's why offering a simple, transparent, and enforceable way to HODL isn't just useful, it's a valuable contribution to long-term investing discipline.
+That's why offering a simple, transparent, and enforceable way to HODL is not just useful, it is a valuable contribution to long-term investing discipline.
+
 
 ---
 
@@ -27,7 +28,7 @@ DeFi Keep allows any user to:
 
 - Lock the native token for a specified number of seconds.
 - Assign a reclaim address to retrieve the funds after the unlock period.
-- Update the reclaim address (e.g., if a wallet is compromised).
+- Update the reclaim address (_e.g._, if a wallet is compromised).
 - View the remaining time and lock details.
 - Support multiple locks per address, each with its own terms.
 
@@ -40,6 +41,18 @@ DeFi Keep allows any user to:
 - ✅ Reclaim address updatable by the current reclaim address.
 - ✅ Reentrancy protection.
 - ✅ Self-contained with no external dependencies.
+- ✅ Minimalist design so it is easily understood and useful.
+
+
+---
+
+## ✨ Live deployment
+
+This solution is live in a couple of main-nets as well as test-nets, and accessible on the following website: https://DeFiKeep.com
+
+![This screenshot shows a live example of funds being locked, claimed, and transferred.](./defikeep.png "DeFi Keep Screenshot")
+Fig. 1 - Screenshot showing a live example of funds being locked, claimed, and transferred.  
+
 
 ---
 
@@ -52,12 +65,21 @@ DeFi Keep allows any user to:
 
 ## 📦 Contract Deployments
 
-The DeFi Keep contract has been deployed and verified in the following chains/addresses:
+The DeFi Keep contract has been __deployed__ and __verified__ in the following chains/addresses:
 
-- **Citrea (testnet)**: [0xa1AC5bD954aa0857F15287eC67Fee4d5587f6E04](https://explorer.testnet.citrea.xyz/address/0xa1AC5bD954aa0857F15287eC67Fee4d5587f6E04?tab=contract)
-- **RootStock (testnet)**: [0x88b9AD1E44b6Fc2E1F2B6A4D2b862c4C20144a6d](https://rootstock-testnet.blockscout.com/address/0x88b9AD1E44b6Fc2E1F2B6A4D2b862c4C20144a6d?tab=contract)
+### Mainnets:
+
+- **RootStock Testnet**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://rootstock.blockscout.com/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
+- **Flow EVM Testnet**: [0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7](https://evm.flowscan.io/address/0x6Aef6B0B33a4f99Cdd4baC962700bF17b700B6b7?tab=contract)
+
+
+### Testnets:
+- **Citrea Testnet**: [0x18253170c3f5719e621cc65330135032cba33632](https://explorer.testnet.citrea.xyz/address/0x18253170c3f5719e621cc65330135032cba33632?tab=contract)
+- **RootStock Testnet**: [0xbF31eC2eFBEeC6F5cfdbb3febc703BC1be0A8FE5](https://rootstock-testnet.blockscout.com/address/0xbF31eC2eFBEeC6F5cfdbb3febc703BC1be0A8FE5?tab=contract)
+- **Flow EVM Testnet**: [0xB9F473490Fc5f6466C60137C4016e15E5330f10B](https://evm-testnet.flowscan.io/address/0xB9F473490Fc5f6466C60137C4016e15E5330f10B?tab=contract)
+
+
 ---
-
 ## 🚀 How to Use
 
 DeFi Keep mainly consists of 3 operations: 1) lock funds, 2) reclaim funds, and 3) optionally transfer the lock ownership of locked funds to a new owner/address. 
@@ -79,8 +101,14 @@ function reclaim(uint256 lockId) external
 
 ### 🛠 Update Reclaim Address
 
-Use this function to change the reclaim address for a specific lock. This is useful if you want to transfer ownership to a new wallet (e.g. hardware wallet or cold storage).
+Use this function to change the reclaim address for a specific lock. This is useful if you want to transfer ownership to a new wallet (_e.g._ hardware wallet or cold storage).
 
 ```solidity
 function updateReclaimAddress(uint256 lockId, address newAddress) external
 ```
+
+---
+
+## 👨‍💻 Author
+
+António Roldão is the creator of DeFi Keep. António is an entrepreneur and a passionate technologist with a Ph.D. in Electronics and Computer Engineering from Imperial College London. Antonio’s career spans diverse fields, including aerospace, finance, and artificial intelligence. He is the co-founder and CEO of muse.ai, where he has pioneered advanced video search technology leveraging cutting-edge AI. Antonio combines deep technical expertise with a drive to create technologies that empower people and simplify complexity.

@@ -141,6 +141,11 @@ contract DeFiKeep {
         return block.timestamp >= locks[reclaimAddress][lockId].unlockTime;
     }
 
+    // Function to get all locks for a specific address.
+    function getLocks(address user) external view returns (Lock[] memory) {
+        return locks[user];
+    }
+
     // Function to get the details of a specific lock.
     function lockDetails(address reclaimAddress, uint256 lockId) external view returns (Lock memory) {
         return locks[reclaimAddress][lockId];

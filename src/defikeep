@@ -41,6 +41,17 @@ def lock(amount, addr=addr_mine, seconds_lock=120):
     _exec_transaction(transaction)
 
 
+def get_locks(addr=addr_mine):
+    try:
+        # Get locks details:
+        locks = contract.functions.getLocks(addr).call()
+        log.info(f"Locks: {locks}")
+        return locks
+    except Exception as e:
+        log.error(f"looking up locks for: {addr} | e: {e}")
+        return {}
+
+
 def get_lock_details(addr=addr_mine, lock_id=0):
     try:
         # Get lock details:
@@ -55,7 +66,7 @@ def get_lock_details(addr=addr_mine, lock_id=0):
         log.info(f"Lock details: {ret}")
         return ret
     except Exception as e:
-        log.error(f"looking up lock details for: {addr}/{lock_id}")
+        log.error(f"looking up lock details for: {addr}/{lock_id} | e: {e}")
         return {}
 
 
@@ -78,7 +89,9 @@ def update_reclaim_address(lock_id, addr_new):
 def validate():
     # (un)Comment as necessary to test/validate contract functionality:
     show_balance()
+    # get_locks()
     # lock(amount=0.001, addr=addr_mine, seconds_lock=60)
+    # lock(amount=0.0003, addr=addr_mine, seconds_lock=600)
     # get_lock_details(lock_id=0)
     ## update_reclaim_address(0, '<new-address>')
     # reclaim(lock_id=0)

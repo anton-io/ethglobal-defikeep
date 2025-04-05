@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DeFi Keep | smart contract for locking native tokens over long periods of time.</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+
+    #walletAddress, #walletBalance {
+      text-align: left;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f7f7f7;
+    }
+
+    .actions a {
+      margin: 0 5px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .actions a:hover {
+      text-decoration: underline;
+    }
+
+    /* Popup modal styles */
+    #popup {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-content input {
+      width: 90%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .popup-content button {
+      margin-top: 15px;
+      width: 45%;
+    }
+
+    .status {
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      th, td {
+        font-size: 0.85em;
+        padding: 8px;
+      }
+    }
+
+    #lockPopup {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🔐 DeFi Keep</h1>
+  <p>
+    A minimalistic and secure EVM smart contract for long-term token locking with transferable ownership,
+    ideal for: savings plans, trust funds, estate planning, and preventing impulsive decisions (e.g. FOMO/YOLO).
+  </p>
+
+  <div id="selectChain">
+    <div style="margin: 20px 0; text-align: center;">
+      <h3>Select Network</h3>
+      <div style="margin-bottom: 10px;">
+        <strong>Mainnet:</strong><br><br>
+        <button onclick="selectChain('rootstock')">Rootstock</button>
+        <br><br>
+        <button onclick="selectChain('flow')">Flow</button>
+        <br><br>
+      </div>
+      <hr>
+      <div>
+        <strong>Testnet:</strong><br><br>
+        <button onclick="selectChain('rootstock-testnet')">Rootstock Testnet</button>
+        <br><br>
+        <button onclick="selectChain('citrea-testnet')">Citrea Testnet</button>
+        <br><br>
+        <button onclick="selectChain('flow-testnet')">Flow Testnet</button>
+        <br><br>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <div id="main" style="display: none;">
+    <button id="connectButton">⛓️ Connect Wallet</button>
+    <button id="disconnectButton" style="display:none;">⛓️‍💥 Disconnect</button>
+    <br><br>
+    <button id="lockFundsBtn" disabled>🔒 Lock Funds</button>
+    <br><br>
+    <button id="reLoadFunds" disabled>🔁 (re)Load Locked Funds</button>
+    <p id="walletBalance"></p>
+    <p id="walletAddress"></p>
+    <p id="noLocks" style="display:none; text-align:center; color:#666;"></p>
+    <table id="locksTable" style="display: none;">
+      <thead>
+      <tr>
+        <th>Amount</th>
+        <th>Locked At</th>
+        <th>Unlocks At</th>
+        <th>Actions</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody id="locksBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Transfer Modal -->
+<div id="popup" style="display: none;">
+  <div class="popup-content">
+    <h3>Transfer Ownership</h3>
+    <input type="text" id="newAddress" placeholder="New Address 0x...">
+    <div style="margin-top:10px;">
+      <button onclick="transferFunds()">Transfer</button>
+      <button onclick="closePopup()">Cancel ❌</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lock Funds Modal -->
+<div id="lockPopup" style="display: none;">
+  <div class="popup-content">
+    <h3>Lock Funds</h3>
+    <p id="fundsAvailable"></p>
+    <input type="number" id="lockAmount" placeholder="Amount in ETH" step="0.01" min="0">
+    <input type="number" id="lockDuration" placeholder="Duration in seconds" min="1">
+    <div style="margin-top:10px;">
+      <button onclick="lockFunds()">Confirm</button>
+      <button onclick="closeLockPopup()">Cancel ❌</button>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align: center; margin: -20px 0 20px 0;">
+  <a href="https://github.com/anton-io/ethglobal-defikeep/tree/main" target="_blank"
+     style="text-decoration: none; color: #000;">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"
+         style="width: 24px; vertical-align: middle; margin-right: 8px;">
+    View on GitHub
+  </a>
+</footer>
+
+<script src="config.js"></script>
+<script>
+  let web3;
+  let userAccount;
+  let balanceAccount;
+  let contract;
+  let transferId;
+  let config;
+
+  async function selectChain(chain) {
+    config = configs[chain];
+    if (window.ethereum) {
+      const chainId = config['cid'];
+      try {
+        // Switch to chain in MetaMask.
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{chainId: chainId}],
+        });
+        console.log(`Successfully switched to ${config['name']}`);
+        document.getElementById('selectChain').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          // If the chain is not added to MetaMask, prompt to add it
+          try {
+            await ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: chainId,
+                chainName: config['name'],
+                rpcUrls: config['rpcs'],
+                blockExplorerUrls: config['exps'],
+                nativeCurrency: {
+                  name: config['symb'],
+                  symbol: config['symb'],
+                  decimals: 18,
+                },
+              }],
+            });
+            alert(`${config['name']} added to MetaMask and switched!`);
+          } catch (addError) {
+            console.error('Failed to add the chain:', addError);
+            alert('Failed to add the chain');
+          }
+        } else {
+          console.error('Failed to switch chain:', switchError);
+          alert('Failed to switch chain');
+        }
+      }
+    } else {
+      alert('MetaMask is not installed');
+    }
+  }
+
+  // Connect to MetaMask and enable Web3.
+  document.getElementById('connectButton').onclick = async function () {
+    if (window.ethereum) {
+      web3 = new Web3(window.ethereum);
+      try {
+        await ethereum.request({method: 'eth_requestAccounts'}); // Request accounts.
+        userAccount = (await web3.eth.getAccounts())[0]; // Get the user's account.
+        document.getElementById('walletAddress').textContent = `Wallet: ${userAccount}`;
+        document.getElementById('reLoadFunds').disabled = false;
+        document.getElementById('reLoadFunds').style.display = 'flex';
+        document.getElementById('lockFundsBtn').disabled = false;
+
+        // Initialize the contract.
+        contract = new web3.eth.Contract(contractABI, config['ca']);
+        showBalance();
+        showLocks();
+        document.getElementById('disconnectButton').style.display = 'inline-block';
+        document.getElementById('connectButton').style.display = 'none';
+      } catch (error) {
+        console.error("User denied account access", error);
+      }
+    } else {
+      alert("MetaMask is not installed. Please install it to continue.");
+    }
+  };
+
+  document.getElementById('disconnectButton').onclick = function () {
+    // Clear UI state
+    userAccount = null;
+    contract = null;
+    document.getElementById('walletAddress').textContent = '';
+    document.getElementById('walletBalance').textContent = '';
+    document.getElementById('locksBody').innerHTML = '';
+    document.getElementById('locksTable').style.display = 'none';
+    document.getElementById('noLocks').style.display = 'none';
+
+    // Reset buttons.
+    document.getElementById('reLoadFunds').disabled = true;
+    document.getElementById('lockFundsBtn').disabled = true;
+
+    // Toggle buttons.
+    document.getElementById('disconnectButton').style.display = 'none';
+    document.getElementById('connectButton').style.display = 'inline-block';
+
+    // Reset back to chain selector.
+    document.getElementById('selectChain').style.display = 'block';
+    document.getElementById('main').style.display = 'none';
+  };
+
+  async function showBalance() {
+    // Get the account's balance.
+    balanceAccount = (await web3.eth.getBalance(userAccount));
+    let val = (balanceAccount / 1e18).toFixed(6);
+    document.getElementById('walletBalance').textContent = `Balance: ${val}`;
+    document.getElementById('fundsAvailable').textContent = `Available: ${val}`;
+  }
+
+  async function reclaim(lockId) {
+    try {
+      const tx = await contract.methods.reclaim(lockId).send({from: userAccount});
+      alert(`Transaction successful: ${tx.transactionHash}`);
+    } catch (error) {
+      console.error("Error writing to contract", error);
+    }
+  }
+
+  async function showLocks() {
+    try {
+      const locks = await contract.methods.getLocks(userAccount).call(); // Replace with your contract method
+      if (locks.length === 0) {
+        document.getElementById('noLocks').style.display = 'block';
+        document.getElementById('locksTable').style.display = 'none';
+        document.getElementById('noLocks').innerHTML = `<br> No funds Locked`;
+      } else {
+        document.getElementById('noLocks').style.display = 'none';
+        document.getElementById('locksTable').style.display = 'block';
+        const tbody = document.getElementById('locksBody')
+        tbody.innerHTML = '';
+
+        for (let i = 0; i < locks.length; i++) {
+          let lock = locks[i];
+          console.log(`${i} | ${lock}`);
+          let amount = lock[1];
+          let tstart = lock[2];
+          let tend = lock[3];
+          let claimed = lock[4];
+          let status = '⏳ locked';
+          let tnow = ~~(Date.now() / 1000);
+          let action_reclaim = '';
+          let action_transfer = '';
+          if (tnow >= tend) {
+            status = claimed ? '💰 claimed' : '✅ unlocked';
+            action_reclaim = claimed ? '' : `/ <a href="javascript:reclaim(${i})">reclaim</a>`;
+          }
+          action_transfer = claimed ? '' : `<a href="javascript:openPopup(${i})">transfer</a>`;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${(amount / 1e18).toFixed(5)}</td>
+            <td>${new Date(tstart * 1000).toLocaleString()}</td>
+            <td>${new Date(tend * 1000).toLocaleString()}</td>
+            <td>
+              ${action_transfer}
+              ${action_reclaim}
+             </td>
+            <td>${status}</td>
+          `;
+          tbody.appendChild(row);
+        }
+      }
+    } catch (error) {
+      console.error("Error reading from contract", error);
+    }
+  }
+
+  // Read from the contract (example: get the value of a variable).
+  document.getElementById('reLoadFunds').onclick = async function () {
+    showLocks();
+  };
+
+  function openPopup(lockId) {
+    transferId = lockId;
+    document.getElementById('popup').style.display = 'flex';
+  }
+
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+
+  async function transferFunds() {
+    const newAddress = document.getElementById('newAddress').value;
+    document.getElementById('newAddress').value = '';
+
+    let log_msg = `Transfer ${transferId} to ${newAddress}`
+    console.log(log_msg);
+    closePopup();
+    try {
+      const tx = await contract.methods.updateReclaimAddress(transferId, newAddress).send({from: userAccount});
+      alert(`Transaction successful: ${tx.transactionHash}`);
+      await showLocks();
+    } catch (error) {
+      let log_msg = `Error transferring: ${error}`;
+      alert(log_msg)
+      console.error(log_msg);
+    }
+  }
+
+
+  document.getElementById('lockFundsBtn').onclick = () => {
+    document.getElementById('lockPopup').style.display = 'flex';
+  };
+
+  function closeLockPopup() {
+    document.getElementById('lockPopup').style.display = 'none';
+  }
+
+  async function lockFunds() {
+    const amount = parseFloat(document.getElementById('lockAmount').value);
+    const durationSeconds = parseInt(document.getElementById('lockDuration').value);
+
+    if (isNaN(amount) || isNaN(durationSeconds) || amount <= 0 || durationSeconds <= 0) {
+      alert("Please enter valid amount and duration.");
+      return;
+    }
+    closeLockPopup();
+    try {
+      const tx = await contract.methods.lock(userAccount, durationSeconds).send({
+        from: userAccount,
+        value: web3.utils.toWei(amount.toString(), 'ether')
+      });
+      alert(`Locked successfully! TX: ${tx.transactionHash}`);
+      await showLocks();
+    } catch (err) {
+      alert(`Failed to lock: ${err.message}`);
+      console.error(err);
+    }
+  }
+</script>
+</body>
+</html>
